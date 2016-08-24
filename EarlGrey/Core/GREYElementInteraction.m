@@ -22,6 +22,7 @@
 #import "Assertion/GREYAssertionDefines.h"
 #import "Assertion/GREYAssertions.h"
 #import "Common/GREYConfiguration.h"
+#import "Common/GREYExposed.h"
 #import "Common/GREYPrivate.h"
 #import "Core/GREYElementFinder.h"
 #import "Core/GREYInteractionDataSource.h"
@@ -195,7 +196,13 @@ NSString *const kGREYAssertionErrorUserInfoKey = @"kGREYAssertionErrorUserInfoKe
       NSAssert(strongSelf, @"strongSelf must not be nil");
 
       NSArray *elements = [strongSelf matchedElementsWithTimeout:timeout error:&actionError];
-      if (elements.count > 1) {
+      if ([[UIApplication sharedApplication] _isSpringBoardShowingAnAlert] &&
+          ![[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"com.apple.springboard"]) {
+        NSString *description = @"System alert view is displayed.";
+        actionError = [NSError errorWithDomain:kGREYInteractionErrorDomain
+                                          code:kGREYInteractionSystemAlertViewIsDisplayedErrorCode
+                                      userInfo:@{ NSLocalizedDescriptionKey : description }];
+      } else if (elements.count > 1) {
         actionError = [strongSelf grey_errorForMultipleMatchingElements:elements];
       } else {
         id element = [elements firstObject];

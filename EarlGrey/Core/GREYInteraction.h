@@ -51,6 +51,10 @@ typedef NS_ENUM(NSInteger, GREYInteractionErrorCode) {
    *  Single element search found multiple elements.
    */
   kGREYInteractionMultipleElementsMatchedErrorCode,
+  /**
+   *  System alert view is displayed.
+   */
+  kGREYInteractionSystemAlertViewIsDisplayedErrorCode,
 };
 
 /**
